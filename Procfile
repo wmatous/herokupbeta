@@ -1,1 +1,1 @@
-web: gunicorn pbeta.wsgi
+web: gunicorn pbeta2.wsgi
