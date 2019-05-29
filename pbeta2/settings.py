@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'oauth2_provider',
     'social_django',
+    'rest_framework_social_oauth2',
 ]
 
 REST_FRAMEWORK = {
@@ -50,7 +52,12 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ],
+
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -61,6 +68,8 @@ AUTHENTICATION_BACKENDS = (
  'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
  
  'django.contrib.auth.backends.ModelBackend',
+
+ 'rest_framework_social_oauth2.backends.DjangoOAuth2',
 )
 
 LOGIN_URL = 'login'
@@ -96,6 +105,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # <- Here
                 'social_django.context_processors.login_redirect',
+                
             ],
         },
     },
