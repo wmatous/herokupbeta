@@ -13,6 +13,22 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import django_heroku
 from dotenv import load_dotenv
+
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'pragma',
+    'cache-control',
+    'upgrade-insecure-requests'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://distracted-shaw-f9cd0a.netlify.com',
+]
+
+CORS_REPLACE_HTTPS_REFERER = True
+
+
 load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -43,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'social_django',
+    'corsheaders'
 ]
 
 REST_FRAMEWORK = {
@@ -76,10 +93,18 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware', # remove
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = [
+    "https://distracted-shaw-f9cd0a.netlify.com/",
+]
+
+CORS_ALLOW_CREDENTIALS =True
 
 ROOT_URLCONF = 'pbeta2.urls'
 

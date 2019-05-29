@@ -18,3 +18,4 @@ django-heroku
 markdown      
 django-filter
 python-dotenv
+django-cors-headers
