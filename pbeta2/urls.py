@@ -16,10 +16,31 @@ Including another URLconf
 
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth import views
+from django.contrib.auth import views, login
 from .views import home
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
+from social_django.utils import psa
+
+# Define an URL entry to point to this view, call it passing the
+# access_token parameter like ?access_token=<token>. The URL entry must
+# contain the backend, like this:
+#
+#   url(r'^register-by-token/(?P<backend>[^/]+)/$',
+#       'register_by_access_token')
+
+@psa('social:complete')
+def register_by_access_token(request, backend):
+    # This view expects an access_token GET parameter, if it's needed,
+    # request.backend and request.strategy will be loaded with the current
+    # backend and strategy.
+    token = request.GET.get('access_token')
+    user = request.backend.do_auth(token)
+    if user:
+        login(request, user)
+        return 'OK'
+    else:
+        return 'ERROR'
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,10 +59,12 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+    url(r'^register-by-token/(?P<backend>[^/]+)/$', register_by_access_token),
+    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
-    url(r'^auth/', include('social_django.urls', namespace='social')),  # <- Here
+    # url(r'^auth/', include('social_django.urls', namespace='social')),  # <- Here
     url(r'^$', home, name='home'),
 ]

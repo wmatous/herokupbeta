@@ -14,21 +14,6 @@ import os
 import django_heroku
 from dotenv import load_dotenv
 
-from corsheaders.defaults import default_headers
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'pragma',
-    'cache-control',
-    'upgrade-insecure-requests'
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://distracted-shaw-f9cd0a.netlify.com',
-]
-
-CORS_REPLACE_HTTPS_REFERER = True
-
-
 load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -58,8 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'oauth2_provider',
     'social_django',
-    'corsheaders'
+    'rest_framework_social_oauth2',
+    'rest_framework.authtoken'
 ]
 
 REST_FRAMEWORK = {
@@ -67,8 +54,17 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+        
+        # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+
 }
+
+# SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 AUTHENTICATION_BACKENDS = (
  'social_core.backends.open_id.OpenIdAuth',  # for Google authentication
@@ -77,6 +73,7 @@ AUTHENTICATION_BACKENDS = (
  'social_core.backends.github.GithubOAuth2',  # for Github authentication
  'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
  
+ 'rest_framework_social_oauth2.backends.DjangoOAuth2',
  'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -93,18 +90,10 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsPostCsrfMiddleware', # remove
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
-
-CORS_ORIGIN_WHITELIST = [
-    "https://distracted-shaw-f9cd0a.netlify.com/",
-]
-
-CORS_ALLOW_CREDENTIALS =True
 
 ROOT_URLCONF = 'pbeta2.urls'
 
@@ -119,7 +108,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',  # <- Here
+                'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
         },
