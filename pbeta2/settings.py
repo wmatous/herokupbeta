@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import django_heroku
 from dotenv import load_dotenv
-
 from corsheaders.defaults import default_headers
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -27,7 +26,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_REPLACE_HTTPS_REFERER = True
-
 
 load_dotenv()
 
@@ -61,6 +59,8 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
+    'trips',
+    'corsheaders'
 ]
 
 REST_FRAMEWORK = {
@@ -106,13 +106,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 CORS_ORIGIN_WHITELIST = [
     "https://distracted-shaw-f9cd0a.netlify.com/",
+    "http://localhost:3000/"
 ]
 
 CORS_ALLOW_CREDENTIALS =True
+
+
 
 ROOT_URLCONF = 'pbeta2.urls'
 
