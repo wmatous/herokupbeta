@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from trips.models import Trip, Marker, Layer, LayerPoint
 from rest_framework import routers, serializers, viewsets, response
+from drf_writable_nested import WritableNestedModelSerializer
 
 class MarkerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -11,7 +12,6 @@ class MarkerViewSet(viewsets.ModelViewSet):
     queryset = Marker.objects.all()
     serializer_class = MarkerSerializer
 
-
 class LayerPointSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = LayerPoint
@@ -21,17 +21,22 @@ class LayerPointViewSet(viewsets.ModelViewSet):
     queryset = LayerPoint.objects.all()
     serializer_class = LayerPointSerializer
 
-class LayerSerializer(serializers.HyperlinkedModelSerializer):
+class LayerSerializer(WritableNestedModelSerializer):
     POINTS = LayerPointSerializer(many=True)
     class Meta:
         model = Layer
         fields = ('ID', 'COLOUR', 'POINTS')
 
+   #""" def create(self, validated_data):
+   #     print(validated_data)
+   #     validated_data.pop('ID')
+   #     return Layer.objects.create(**validated_data) """
+
 class LayerViewSet(viewsets.ModelViewSet):
     queryset = Layer.objects.all()
     serializer_class = LayerSerializer
 
-class TripSerializer(serializers.ModelSerializer):
+class TripSerializer(WritableNestedModelSerializer):
     MARKERS = MarkerSerializer(many=True)
     LAYERS = LayerSerializer(many=True)
     class Meta:

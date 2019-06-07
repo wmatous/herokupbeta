@@ -2,7 +2,6 @@ from django.db.models import ( Model, CharField, PositiveSmallIntegerField, Floa
 URLField, UUIDField, ManyToManyField, TextField, CASCADE, DateTimeField)
 import uuid
 
-
 # Create your models here.
 
 class Forecast(Model):
