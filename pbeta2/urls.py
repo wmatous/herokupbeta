@@ -20,7 +20,7 @@ from django.contrib.auth import views
 from .views import home
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
-from trips.views import TripViewSet
+from trips.views import TripViewSet, LayerViewSet
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,6 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'trips', TripViewSet)
+router.register(r'layers', LayerViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

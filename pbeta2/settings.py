@@ -110,8 +110,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    "https://distracted-shaw-f9cd0a.netlify.com/",
-    "http://localhost:3000/"
+    "https://distracted-shaw-f9cd0a.netlify.com",
+    "http://localhost:3000"
 ]
 
 CORS_ALLOW_CREDENTIALS =True
